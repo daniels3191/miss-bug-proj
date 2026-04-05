@@ -1,9 +1,9 @@
 import express from 'express'
-import { makeId } from './services/util.service.js'
 import { bugService } from './services/bug.service.js'
 import { loggerService } from './services/logger.service.js'
 
 const app = express()
+app.use(express.static('public'))
 
 app.get('/api/bug', (req, res) =>
 
@@ -32,7 +32,7 @@ app.get('/api/bug/:_id', (req, res) => {
     const bug_id = req.params._id
     
     bugService.get(bug_id)
-        .then(bug => res.send(bug))
+        .then(bug => {res.send(bug)})
         .catch(err => {
             loggerService.error(err)
             res.status(404).send('Cant find bug')
