@@ -1,24 +1,16 @@
 import express from 'express'
 import { makeId } from './services/util.service.js'
+import { bugService } from './services/bug.service.js'
+import { loggerService } from './services/logger.service.js'
 
 const app = express()
 
-const bugs = [{
-    "_id": "abc123",
-    "title": "Cannot save a new car",
-    "description": "problem when clicking Save",
-    "severity": 3,
-    "createdAt": 1542107359454,
-},
-{
-    "_id": "abc124",
-    "title": "Big bag",
-    "description": "A TV show bug",
-    "severity": 2,
-    "createdAt": 15421073594,
-}]
+app.get('/api/bug', (req, res) =>
 
-app.get('/api/bug', (req, res) => res.send(bugs))
+    bugService.query()
+        .then(bugs => res.send(bugs))
+)
+
 
 app.get('/api/bug/save', (req, res) => {
     const { _id, title, description, severity } = req.query
@@ -29,36 +21,41 @@ app.get('/api/bug/save', (req, res) => {
         severity: +severity,
     }
 
-    if (_id) {
-        const idx = bugs.findIndex(bug => bug._id === _id)
-        bugs[idx] = { ...bugs[idx], ...bugToSave }
-    } else {
-        bugToSave._id = makeId()
-        bugToSave.createdAt = Date.now()
-        bugs.push(bugToSave)
-    }
+    bugService.save(bugToSave)
+    .then((savedBug) => res.send(savedBug))
 
-    res.send(bugToSave)
+
+    
 })
 
 app.get('/api/bug/:_id', (req, res) => {
-    const _id = req.params._id
-    const bug = bugs.find(bug => bug._id === _id)
+    const bug_id = req.params._id
+    
+    bugService.get(bug_id)
+        .then(bug => res.send(bug))
+        .catch(err => {
+            loggerService.error(err)
+            res.status(404).send('Cant find bug')
+        })
 
-    res.send(bug)
 })
 
+
 app.get('/api/bug/:_id/remove', (req, res) => {
-    const _id = req.params._id
-    const idx = bugs.findIndex(bug => bug._id === _id)    
+    const bug_id = req.params._id
 
-    if (idx === -1) {
-        res.send('Cant remove')
-        return
-    }
+    bugService.remove(bug_id)
+    .then(bug_id =>   {
+        console.log(bug_id);
+        
+        res.send(`The bug ${bug_id} has been removed`)
+    })
+    .catch(err => {
+        loggerService.error(err)
+         res.status(404).send('Cant remove the bug')
+    })
 
-    bugs.splice(idx, 1)
-    res.send('OK')
+    
 })
 
 
