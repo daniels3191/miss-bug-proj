@@ -3,7 +3,7 @@
     "_id": "abc123",
     "title": "Cannot save a new bug",
     "description": "problem when clicking Save",
-    "severity": 1,
+    "severity": 2,
     "createdAt": 1542107359454
   },
   {
@@ -28,17 +28,10 @@
     "createdAt": 1775418335271
   },
   {
-    "_id": "AxkWM",
-    "title": "Bug number1775418509876",
+    "_id": "sKZLM",
+    "title": "Bug number 1775660871031",
     "description": "undefined",
-    "severity": 11,
-    "createdAt": 1775418526979
-  },
-  {
-    "_id": "ZpEO0",
-    "title": "Bug number 1775418567808",
-    "description": "undefined",
-    "severity": 0,
-    "createdAt": 1775418574413
+    "severity": 3,
+    "createdAt": 1775660874114
   }
 ]

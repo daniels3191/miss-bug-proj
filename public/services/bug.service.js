@@ -18,25 +18,25 @@ export const bugService = {
 
 function query(filterBy) {
     return axios.get(BASE_URL)
-    .then(res => res.data)
-    .then(bugs => {
+        .then(res => res.data)
+        .then(bugs => {
 
-        if (filterBy.txt) {
-            const regExp = new RegExp(filterBy.txt, 'i')
-            bugs = bugs.filter(bug => regExp.test(bug.title))
-        }
+            if (filterBy.txt) {
+                const regExp = new RegExp(filterBy.txt, 'i')
+                bugs = bugs.filter(bug => regExp.test(bug.title))
+            }
 
-        if (filterBy.minSeverity) {
-            bugs = bugs.filter(bug => bug.severity >= filterBy.minSeverity)
-        }
+            if (filterBy.minSeverity) {
+                bugs = bugs.filter(bug => bug.severity >= filterBy.minSeverity)
+            }
 
-        return bugs
-    })
+            return bugs
+        })
 }
 
 function getById(bugId) {
     return axios.get(BASE_URL + bugId)
-    .then(res =>  res.data)
+        .then(res => res.data)
 
 }
 
@@ -45,21 +45,19 @@ function remove(bugId) {
 }
 
 function save(bug) {
-    const queryStr = `save?title=${bug.title}&description=${bug.description}&severity=${bug.severity}&_id=${bug._id || ''}`
+    let queryStr = `save?title=${bug.title}&description=${bug.description}&severity=${bug.severity}`
 
-    if (bug._id) {
+    if (bug._id) queryStr += `&_id=${bug._id}`
+    
         return axios.get(BASE_URL + queryStr)
-            .then(res =>  res.data)
-    } else {
-        return axios.get(BASE_URL + queryStr)
-        .then(res =>  res.data)
-    }
+        .then(res => res.data)
+
 }
 
 
 function _createBugs() {
     let bugs = utilService.loadFromStorage(STORAGE_KEY)
-    if (bugs && bugs.length > 0) return 
+    if (bugs && bugs.length > 0) return
 
     bugs = [
         {
