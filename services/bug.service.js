@@ -11,13 +11,25 @@ export const bugService = {
 }
 
 
-export function query() {
-    return Promise.resolve(bugs)
+export function query(filterBy = {}) {
+
+    let filteredBugs = bugs
+
+    if (filterBy.txt) {
+        const regExp = new RegExp(filterBy.txt, 'i')
+        filteredBugs = filteredBugs.filter(bug => regExp.test(bug.title))
+    }
+
+    if (filterBy.minSeverity) {
+        filteredBugs = filteredBugs.filter(bug => bug.severity >= filterBy.minSeverity)
+    }
+
+    return Promise.resolve(filteredBugs)
 }
 
 export function get(bug_id) {
     const bug = bugs.find(bug => bug._id === bug_id)
-    if(!bug) return Promise.reject(`Cant find the bug ${bug_id}`)
+    if (!bug) return Promise.reject(`Cant find the bug ${bug_id}`)
 
     return Promise.resolve(bug)
 }
@@ -29,9 +41,9 @@ export async function remove(bug_id) {
     if (idx === -1) return Promise.reject(`Cant remove bug ${bug_id}`)
 
     const bugToRemove = bugs.splice(idx, 1)[0]
-    
+
     return _saveBugsToFile()
-    .then(() => bugToRemove._id)
+        .then(() => bugToRemove._id)
 
 }
 
@@ -45,9 +57,9 @@ export function save(bugToSave) {
         bugToSave.createdAt = Date.now()
         bugs.push(bugToSave)
     }
-    
+
     return _saveBugsToFile()
-    .then(() => bugToSave)
+        .then(() => bugToSave)
 
 }
 
