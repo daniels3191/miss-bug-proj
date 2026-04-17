@@ -6,55 +6,73 @@ import { loggerService } from './services/logger.service.js'
 
 const app = express()
 app.use(express.static('public'))
+app.use(express.json())
 app.use(cookieParser())
 
-app.get('/api/bug', (req, res) =>{
-    
-    const filterBy ={
-        txt: req.query.txt || '',
-        minSeverity: req.query.minSeverity || 0,
+// Support arrays in query params (req.query)
+app.set('query parser', 'extended')
+
+const PAGE_SIZE = 2
+
+app.get('/api/bug', (req, res) => {
+    const queryOptions = parseQueryParams(req.query)
+    bugService.query(queryOptions)
+        .then(bugs => res.send(bugs))
+})
+
+function parseQueryParams(queryParams) {
+    const filterBy = {
+        txt: queryParams.txt || '',
+        minSeverity: queryParams.minSeverity || 0,
+        labels: queryParams.labels || []
     }
 
+    const sortBy = {
+        sortField: queryParams.sortField || '',
+        sortDir: queryParams.sortDir || 1
+    }
 
-    bugService.query(filterBy)
-        .then(bugs => res.send(bugs))
+    const pagination = {
+        startIdx: (queryParams.pageIdx * PAGE_SIZE) || 0,
+        endIdx: (queryParams.pageIdx * PAGE_SIZE + PAGE_SIZE) || PAGE_SIZE
+    }
+    
+    return { filterBy, sortBy, pagination }
 }
 
-)
-
-
-app.get('/api/bug/save', (req, res) => {
-    const { _id, title, description, severity } = req.query
-    const bugToSave = {
-        _id,
-        title,
-        description,
-        severity: +severity,
-    }
+app.put('/api/bug/:_id', (req, res) => {
+    const { _id, title, description, severity, labels } = req.body
+    const bugToSave = { _id, title, description, severity, labels }
 
     bugService.save(bugToSave)
-    .then((savedBug) => res.send(savedBug))
+        .then((savedBug) => res.send(savedBug))
 
+})
 
-    
+app.post('/api/bug', (req, res) => {
+    const { title, description, severity, labels } = req.body
+    const bugToSave = { title, description, severity, labels }
+
+    bugService.save(bugToSave)
+        .then((savedBug) => res.send(savedBug))
+
 })
 
 app.get('/api/bug/:_id', (req, res) => {
 
     const bug_id = req.params._id
-    const {visitedBugs = []} = req.cookies
+    const { visitedBugs = [] } = req.cookies
 
-
-    if(visitedBugs.length === 3 && !visitedBugs.includes(bug_id)) {
+    if (visitedBugs.length === 3 && !visitedBugs.includes(bug_id)) {
         return res.status(401).send('Wait for a bit')
     }
 
-   if(!visitedBugs.includes(bug_id)) visitedBugs.push(bug_id)
-        console.log(visitedBugs);
+    if (!visitedBugs.includes(bug_id)) visitedBugs.push(bug_id)
+    console.log(visitedBugs);
 
-    res.cookie('visitedBugs', visitedBugs, {maxAge: 1000 * 20})
+    res.cookie('visitedBugs', visitedBugs, { maxAge: 1000 * 20 })
     bugService.get(bug_id)
-        .then(bug => {res.send(bug)})
+        .then(bug => { res.send(bug) })
         .catch(err => {
             loggerService.error(err)
             res.status(404).send('Cant find bug')
@@ -62,21 +80,19 @@ app.get('/api/bug/:_id', (req, res) => {
 })
 
 
-app.get('/api/bug/:_id/remove', (req, res) => {
+app.delete('/api/bug/:_id', (req, res) => {
     const bug_id = req.params._id
 
     bugService.remove(bug_id)
-    .then(bug_id =>   {
-        console.log(bug_id);
-        
-        res.send(`The bug ${bug_id} has been removed`)
-    })
-    .catch(err => {
-        loggerService.error(err)
-         res.status(404).send('Cant remove the bug')
-    })
+        .then(bug_id => {
+            console.log(bug_id);
 
-    
+            res.send(`The bug ${bug_id} has been removed`)
+        })
+        .catch(err => {
+            loggerService.error(err)
+            res.status(404).send('Cant remove the bug')
+        })
 })
 
 

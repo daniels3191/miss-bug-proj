@@ -9,22 +9,53 @@ export const bugService = {
     remove,
     save,
 }
+    // const filterBy = {
+    //     txt: queryParams.txt || '',
+    //     minSeverity: queryParams.minSeverity || 0,
+    //     lables: queryParams.lables || []
+    // }
+
+    // const sortBy = {
+    //     sortField: queryParams.sortField || '',
+    //     sortDir:  queryParams.sortDir || 1
+    // }
+
+    // const pagination = {
+    //    startIdx: (filterBy.pageIdx * PAGE_SIZE) || 0,
+    //    endIdx: (filterBy.pageIdx * PAGE_SIZE + PAGE_SIZE) || PAGE_SIZE
+        
+    // }
 
 
-export function query(filterBy = {}) {
+export function query({filterBy, sortBy, pagination}) {
 
-    let filteredBugs = bugs
+    let bugsToReturn = [...bugs]
 
     if (filterBy.txt) {
         const regExp = new RegExp(filterBy.txt, 'i')
-        filteredBugs = filteredBugs.filter(bug => regExp.test(bug.title))
+        bugsToReturn = bugsToReturn.filter(bug => regExp.test(bug.title))
     }
 
     if (filterBy.minSeverity) {
-        filteredBugs = filteredBugs.filter(bug => bug.severity >= filterBy.minSeverity)
+        bugsToReturn = bugsToReturn.filter(bug => bug.severity >= filterBy.minSeverity)
     }
 
-    return Promise.resolve(filteredBugs)
+    if (filterBy.labels && filterBy.labels.length > 0){
+        bugsToReturn = 
+        bugsToReturn.filter(bug => 
+            filterBy.labels.some(label => bug.labels.includes(label)))
+    }
+    if(sortBy.sortField === 'severity' || sortBy.sortField === 'createdAt'){
+        bugsToReturn.sort((a,b) => (a[sortBy.sortField] - b[sortBy.sortField]) * sortBy.sortDir)
+    }else if (sortBy.sortField === 'title'){
+        bugsToReturn.sort((a,b) => (a[sortBy.sortField].localeCompare(b[sortBy.sortField])) * sortBy.sortDir)
+    }
+
+    if(pagination){
+        bugsToReturn = bugsToReturn.slice(pagination.startIdx, pagination.endIdx)
+    }
+
+    return Promise.resolve(bugsToReturn)
 }
 
 export function get(bug_id) {
