@@ -9,7 +9,11 @@
       "critical",
       "need-CR",
       "dev-branch"
-    ]
+    ],
+    "creator": {
+      "_id": "u101",
+      "fullname": "Puki Ja"
+    }
   },
   {
     "_id": "abc124",
@@ -20,7 +24,11 @@
     "labels": [
       "high",
       "dev-branch"
-    ]
+    ],
+    "creator": {
+      "_id": "u102",
+      "fullname": "Bobi Ba"
+    }
   },
   {
     "_id": "abc125",
@@ -31,24 +39,10 @@
     "labels": [
       "critical",
       "dev-branch"
-    ]
-  },
-  {
-    "title": "Cannot use the bug",
-    "description": "problem when clicking edit",
-    "severity": 3,
-    "labels": [
-      "low",
-      "need-CR"
     ],
-    "_id": "Sh1GI",
-    "createdAt": 1776413515111
-  },
-  {
-    "title": "Bug 1776510227161",
-    "description": "Bug number 1776510228072",
-    "severity": 3,
-    "_id": "PZwWs",
-    "createdAt": 1776510230108
+    "creator": {
+      "_id": "u103",
+      "fullname": "Dodi Da"
+    }
   }
 ]
