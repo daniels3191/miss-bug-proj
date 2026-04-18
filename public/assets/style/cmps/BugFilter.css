@@ -1,19 +1,62 @@
 .bug-filter {
     display: flex;
-    align-items: center;
+    flex-direction: column;
 
-    padding-block-end: 1em;
+    padding-block-end: .4em;
     border-block-end: 1px solid lightgray;
     margin-block-start: 1em;
-}
 
-.bug-filter p {
-    margin-inline-end: auto;
-    font-size: 1.1em;
-    font-weight: bold;
-}
 
-:is(.bug-filter) label, input {
-    margin-inline-start: 1em;
-}
+    .form-hedear {
+        p {
+            margin-inline-start: 0.5em;
+            margin-inline-end: auto;
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+    }
 
+    .filter-by {
+        display: flex;
+        align-items: center;
+        gap: .4em;
+        padding-block-end: 0.5em;
+    }
+
+    .sort-by {
+        display: flex;
+        align-items: center;
+        gap: 3em;
+
+        padding-block-start: .4em;
+    }
+
+
+    .sort-field,
+    .sort-dir {
+        display: flex;
+        align-items: center;
+        gap: .43em;
+    }
+
+    label,
+    input {
+        margin-inline-start: 1em;
+    }
+
+
+   
+    .filter-by {
+        border-block-end: 1px solid lightgray;
+        padding-block: .4em;
+    }
+
+    :is(.sort-by, .filter-by) button {
+        margin-inline-start: auto;
+        font-size: 0.7em;
+    }
+    label:has(input:checked) {
+    padding: .2em .4em ;
+  background-color: var(--gray2);
+}
+}

@@ -1,4 +1,4 @@
-const { useState, useEffect, useRef} = React
+const { useState, useEffect, useRef } = React
 
 import { bugService } from '../services/bug.service.js'
 import { showSuccessMsg, showErrorMsg } from '../services/event-bus.service.js'
@@ -6,10 +6,12 @@ import { utilService } from '../services/util.service.js'
 
 import { BugFilter } from '../cmps/BugFilter.jsx'
 import { BugList } from '../cmps/BugList.jsx'
+import { Pagination } from '../cmps/Pagination.jsx'
 
 export function BugIndex() {
     const [bugs, setBugs] = useState(null)
     const [filterBy, setFilterBy] = useState(bugService.getDefaultFilter())
+    const [pageCount, setPageCount] = useState()
 
     const debouncedOnSetFilterBy = useRef(utilService.debounce(onSetFilterBy, 500)).current
 
@@ -17,15 +19,17 @@ export function BugIndex() {
 
     function loadBugs() {
         bugService.query(filterBy)
-            .then(setBugs)
+            .then(res => {
+                setBugs(res.bugs)
+                setPageCount(res.pageCount)
+            })
             .catch(err => showErrorMsg(`Couldn't load bugs - ${err}`))
     }
 
     function onRemoveBug(bugId) {
         bugService.remove(bugId)
             .then(() => {
-                const bugsToUpdate = bugs.filter(bug => bug._id !== bugId)
-                setBugs(bugsToUpdate)
+                loadBugs()
                 showSuccessMsg('Bug removed')
             })
             .catch((err) => showErrorMsg(`Cannot remove bug`, err))
@@ -34,13 +38,13 @@ export function BugIndex() {
     function onAddBug() {
         const bug = {
             title: prompt('Bug title?', 'Bug ' + Date.now()),
-            title: prompt('Bug description?', 'Bug number ' + Date.now()),
+            description: prompt('Bug description?', 'Bug number ' + Date.now()),
             severity: +prompt('Bug severity?', 3)
         }
 
         bugService.save(bug)
-            .then(savedBug => {
-                setBugs([...bugs, savedBug])
+            .then(() => {
+                loadBugs()
                 showSuccessMsg('Bug added')
             })
             .catch(err => showErrorMsg(`Cannot add bug`, err))
@@ -68,19 +72,25 @@ export function BugIndex() {
     }
 
     return <section className="bug-index main-content">
-        
+
         <header>
             <h2>Bug List</h2>
             <button onClick={onAddBug}>Add Bug</button>
         </header>
-        
-        <BugFilter 
-            filterBy={filterBy} 
+
+        <BugFilter
+            filterBy={filterBy}
             onSetFilterBy={debouncedOnSetFilterBy} />
 
-        <BugList 
-            bugs={bugs} 
-            onRemoveBug={onRemoveBug} 
+        <BugList
+            bugs={bugs}
+            onRemoveBug={onRemoveBug}
             onEditBug={onEditBug} />
+
+        <Pagination
+            filterBy={filterBy}
+            onSetFilterBy={onSetFilterBy}
+            pageCount={pageCount}
+        />
     </section>
 }

@@ -43,3 +43,7 @@ input, textarea, button, select {
     min-width: 0;
     font-family: inherit;
 }
+
+label input[type="radio"] {
+  display: none;
+}

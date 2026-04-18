@@ -12,12 +12,15 @@ app.use(cookieParser())
 // Support arrays in query params (req.query)
 app.set('query parser', 'extended')
 
-const PAGE_SIZE = 2
 
 app.get('/api/bug', (req, res) => {
     const queryOptions = parseQueryParams(req.query)
     bugService.query(queryOptions)
         .then(bugs => res.send(bugs))
+        .catch(err => {
+            loggerService.error('Cannot get bugs', err)
+            res.status(400).send('Cannot get bugs')
+        })
 })
 
 function parseQueryParams(queryParams) {
@@ -33,30 +36,12 @@ function parseQueryParams(queryParams) {
     }
 
     const pagination = {
-        startIdx: (queryParams.pageIdx * PAGE_SIZE) || 0,
-        endIdx: (queryParams.pageIdx * PAGE_SIZE + PAGE_SIZE) || PAGE_SIZE
+        pageIdx: +queryParams.pageIdx || 0,
+        pageSize: +queryParams.pageSize || 2,
     }
-    
+
     return { filterBy, sortBy, pagination }
 }
-
-app.put('/api/bug/:_id', (req, res) => {
-    const { _id, title, description, severity, labels } = req.body
-    const bugToSave = { _id, title, description, severity, labels }
-
-    bugService.save(bugToSave)
-        .then((savedBug) => res.send(savedBug))
-
-})
-
-app.post('/api/bug', (req, res) => {
-    const { title, description, severity, labels } = req.body
-    const bugToSave = { title, description, severity, labels }
-
-    bugService.save(bugToSave)
-        .then((savedBug) => res.send(savedBug))
-
-})
 
 app.get('/api/bug/:_id', (req, res) => {
 
@@ -79,6 +64,27 @@ app.get('/api/bug/:_id', (req, res) => {
         })
 })
 
+app.put('/api/bug/:_id', (req, res) => {
+    const { _id, title, description, severity, labels } = req.body
+    const bugToSave = { _id, title, description, severity, labels }
+
+    bugService.save(bugToSave)
+        .then((savedBug) => res.send(savedBug))
+
+})
+
+app.post('/api/bug', (req, res) => {
+    const { title, description, severity, labels } = req.body
+    const bugToSave = { title, description, severity, labels }
+
+    bugService.save(bugToSave)
+        .then((savedBug) => res.send(savedBug))
+        .catch(err => {
+            loggerService.error(err)
+            res.status(404).send(err)
+        })
+
+})
 
 app.delete('/api/bug/:_id', (req, res) => {
     const bug_id = req.params._id

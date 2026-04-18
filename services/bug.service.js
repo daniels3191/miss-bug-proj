@@ -9,26 +9,9 @@ export const bugService = {
     remove,
     save,
 }
-    // const filterBy = {
-    //     txt: queryParams.txt || '',
-    //     minSeverity: queryParams.minSeverity || 0,
-    //     lables: queryParams.lables || []
-    // }
 
-    // const sortBy = {
-    //     sortField: queryParams.sortField || '',
-    //     sortDir:  queryParams.sortDir || 1
-    // }
-
-    // const pagination = {
-    //    startIdx: (filterBy.pageIdx * PAGE_SIZE) || 0,
-    //    endIdx: (filterBy.pageIdx * PAGE_SIZE + PAGE_SIZE) || PAGE_SIZE
-        
-    // }
-
-
-export function query({filterBy, sortBy, pagination}) {
-
+export function query({ filterBy, sortBy, pagination }) {
+    const results = {}
     let bugsToReturn = [...bugs]
 
     if (filterBy.txt) {
@@ -40,22 +23,26 @@ export function query({filterBy, sortBy, pagination}) {
         bugsToReturn = bugsToReturn.filter(bug => bug.severity >= filterBy.minSeverity)
     }
 
-    if (filterBy.labels && filterBy.labels.length > 0){
-        bugsToReturn = 
-        bugsToReturn.filter(bug => 
-            filterBy.labels.some(label => bug.labels.includes(label)))
+    if (filterBy.labels && filterBy.labels.length > 0) {
+        bugsToReturn =
+            bugsToReturn.filter(bug =>
+                filterBy.labels.some(label => bug.labels.includes(label)))
     }
-    if(sortBy.sortField === 'severity' || sortBy.sortField === 'createdAt'){
-        bugsToReturn.sort((a,b) => (a[sortBy.sortField] - b[sortBy.sortField]) * sortBy.sortDir)
-    }else if (sortBy.sortField === 'title'){
-        bugsToReturn.sort((a,b) => (a[sortBy.sortField].localeCompare(b[sortBy.sortField])) * sortBy.sortDir)
-    }
-
-    if(pagination){
-        bugsToReturn = bugsToReturn.slice(pagination.startIdx, pagination.endIdx)
+    if (sortBy.sortField === 'severity' || sortBy.sortField === 'createdAt') {
+        bugsToReturn.sort((a, b) => (a[sortBy.sortField] - b[sortBy.sortField]) * sortBy.sortDir)
+    } else if (sortBy.sortField === 'title') {
+        bugsToReturn.sort((a, b) => (a[sortBy.sortField].localeCompare(b[sortBy.sortField])) * sortBy.sortDir)
     }
 
-    return Promise.resolve(bugsToReturn)
+    if (pagination) {
+        const { pageIdx, pageSize } = pagination
+        const startIdx = pageIdx * pageSize
+
+        results.pageCount = Math.ceil(bugsToReturn.length / pageSize)
+        bugsToReturn = bugsToReturn.slice(startIdx, startIdx + pageSize)
+    }
+    results.bugs = bugsToReturn
+    return Promise.resolve(results)
 }
 
 export function get(bug_id) {

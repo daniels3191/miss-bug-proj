@@ -69,5 +69,5 @@ function _createBugs() {
 }
 
 function getDefaultFilter() {
-    return { txt: '', minSeverity: 0 }
+    return { txt: '', minSeverity: 0, sortField: '', sortDir: 1, pageIdx: 0 }
 }
