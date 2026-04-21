@@ -52,12 +52,13 @@ export function get(bug_id) {
     return Promise.resolve(bug)
 }
 
-export async function remove(bug_id) {
+export async function remove(bug_id, user) {
 
     const idx = bugs.findIndex(bug => bug._id === bug_id)
 
     if (idx === -1) return Promise.reject(`Cant remove bug ${bug_id}`)
-
+    if(bugs[idx].owner._id != user._id) return Promise.reject('not Your bug')
+        
     const bugToRemove = bugs.splice(idx, 1)[0]
 
     return _saveBugsToFile()
@@ -65,20 +66,29 @@ export async function remove(bug_id) {
 
 }
 
-export function save(bugToSave) {
+export function save(bugToSave, user) {
 
     if (bugToSave._id) {
+            if (bugToSave.owner._id != user._id) return Promise.reject('not Your bug')
         const idx = bugs.findIndex(bug => bug._id === bugToSave._id)
         bugs[idx] = { ...bugs[idx], ...bugToSave }
     } else {
         bugToSave._id = makeId()
         bugToSave.createdAt = Date.now()
+        bugToSave.owner = _extractOwnerDetails(user)
         bugs.push(bugToSave)
     }
-
     return _saveBugsToFile()
         .then(() => bugToSave)
+}
 
+function _extractOwnerDetails(user){
+    const {_id, fullname, isAdmin } = user
+    const owner = {_id, fullname}
+
+    if(isAdmin) owner.isAdmin = isAdmin
+        
+    return owner
 }
 
 function _saveBugsToFile() {

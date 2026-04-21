@@ -3,6 +3,8 @@ import cookieParser from 'cookie-parser'
 
 import { bugService } from './services/bug.service.js'
 import { loggerService } from './services/logger.service.js'
+import { userService } from './services/user.service.js'
+import { authService } from './services/auth.service.js'
 
 const app = express()
 app.use(express.static('public'))
@@ -65,19 +67,25 @@ app.get('/api/bug/:_id', (req, res) => {
 })
 
 app.put('/api/bug/:_id', (req, res) => {
-    const { _id, title, description, severity, labels } = req.body
-    const bugToSave = { _id, title, description, severity, labels }
+    const loggedInUser = authService.validateToken(req.cookies.loginToken)
+    if (!loggedInUser) return res.status(401).send('Unauthenticated')
 
-    bugService.save(bugToSave)
+    const { _id, title, description, severity, labels, owner } = req.body
+    const bugToSave = { _id, title, description, severity, labels, owner }
+
+    bugService.save(bugToSave, loggedInUser)
         .then((savedBug) => res.send(savedBug))
 
 })
 
 app.post('/api/bug', (req, res) => {
+    const loggedInUser = authService.validateToken(req.cookies.loginToken)
+    if (!loggedInUser) return res.status(401).send('Unauthenticated')
+
     const { title, description, severity, labels } = req.body
     const bugToSave = { title, description, severity, labels }
 
-    bugService.save(bugToSave)
+    bugService.save(bugToSave, loggedInUser)
         .then((savedBug) => res.send(savedBug))
         .catch(err => {
             loggerService.error(err)
@@ -87,12 +95,13 @@ app.post('/api/bug', (req, res) => {
 })
 
 app.delete('/api/bug/:_id', (req, res) => {
+    const loggedInUser = authService.validateToken(req.cookies.loginToken)
+    if (!loggedInUser) return res.status(401).send('Unauthenticated')
+
     const bug_id = req.params._id
 
-    bugService.remove(bug_id)
+    bugService.remove(bug_id, loggedInUser)
         .then(bug_id => {
-            console.log(bug_id);
-
             res.send(`The bug ${bug_id} has been removed`)
         })
         .catch(err => {
@@ -101,6 +110,63 @@ app.delete('/api/bug/:_id', (req, res) => {
         })
 })
 
+// User API
+
+app.get('/api/user', (req, res) => {
+    userService.query()
+        .then(users => res.send(users))
+        .catch(err => {
+            loggerService.error('Cannot load users', err)
+            res.status(400).send('Cannot load users')
+        })
+})
+
+app.get('/api/user/:_id', (req, res) => {
+    const user_id = req.params._id
+
+    userService.getById(user_id)
+        .then(user => res.send(user))
+        .catch(err => {
+            loggerService.error('Cannot load user', err)
+            res.status(400).send('Cannot load user')
+        })
+})
+
+// Auth API
+app.post('/api/auth/signup', (req, res) => {
+    const credentials = req.body
+
+    userService.add(credentials)
+        .then(user => {
+            if (user) {
+                const loginToken = authService.getLoginToken(user)
+                res.cookie('loginToken', loginToken)
+                res.send(user)
+            }
+            else {
+                res.status(400).send('Cannot signup')
+            }
+        })
+        .catch(() => res.status(404).send('Invalid Credantials'))
+})
+
+
+app.post('/api/auth/login', (req, res) => {
+    const credentials = req.body
+
+    authService.checkLogin(credentials)
+        .then(user => {
+            const loginToken = authService.getLoginToken(user)
+            res.cookie('loginToken', loginToken)
+            res.send(user)
+        })
+        .catch(() => res.status(404).send('Invalid Credantials'))
+})
+
+app.post('/api/auth/logout', (req, res) => {
+    res.clearCookie('loginToken')
+    res.send('logged-out!')
+})
 
 const port = 3030
 app.listen(port, () => console.log(`Server listening on port http://127.0.0.1:${port}/`))
