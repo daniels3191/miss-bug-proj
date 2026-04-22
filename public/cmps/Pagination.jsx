@@ -1,6 +1,6 @@
 const { useState, useEffect } = React
 
-const PAGE_SIZE = 2
+const PAGE_SIZE = 3
 
 export function Pagination({pageCount, onSetFilterBy, filterBy }) {
     const [filterByToEdit, setFilterByToEdit] = useState(filterBy)
