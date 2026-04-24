@@ -24,7 +24,7 @@ function checkLogin({ username, password }) {
 
 function getLoginToken(user) {
     const str = JSON.stringify(user)
-    const encryptedStr = cryptr.encrypt(user)
+    const encryptedStr = cryptr.encrypt(str)
     return encryptedStr
 }
 

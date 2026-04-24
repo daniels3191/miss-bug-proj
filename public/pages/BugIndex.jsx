@@ -7,6 +7,7 @@ import { utilService } from '../services/util.service.js'
 import { BugFilter } from '../cmps/BugFilter.jsx'
 import { BugList } from '../cmps/BugList.jsx'
 import { Pagination } from '../cmps/Pagination.jsx'
+import { authService } from '../services/auth.service.js'
 
 export function BugIndex() {
     const [bugs, setBugs] = useState(null)
@@ -14,6 +15,7 @@ export function BugIndex() {
     const [pageCount, setPageCount] = useState()
 
     const debouncedOnSetFilterBy = useRef(utilService.debounce(onSetFilterBy, 500)).current
+    const loggedinUser = authService.getLoggedinUser()
 
     useEffect(loadBugs, [filterBy])
 
@@ -75,7 +77,7 @@ export function BugIndex() {
 
         <header>
             <h2>Bug List</h2>
-            <button onClick={onAddBug}>Add Bug</button>
+            {loggedinUser && <button onClick={onAddBug}>Add Bug</button>}
         </header>
 
         <BugFilter

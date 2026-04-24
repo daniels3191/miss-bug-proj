@@ -17,7 +17,6 @@ app.set('query parser', 'extended')
 
 app.get('/api/bug', (req, res) => {
     const queryOptions = parseQueryParams(req.query)
-    console.log(req.query);
     
     bugService.query(queryOptions)
         .then(bugs => res.send(bugs))
@@ -60,7 +59,6 @@ app.get('/api/bug/:_id', (req, res) => {
     }
 
     if (!visitedBugs.includes(bug_id)) visitedBugs.push(bug_id)
-    console.log(visitedBugs);
 
     res.cookie('visitedBugs', visitedBugs, { maxAge: 1000 * 20 })
     bugService.get(bug_id)
@@ -88,8 +86,8 @@ app.post('/api/bug', (req, res) => {
     if (!loggedInUser) return res.status(401).send('Unauthenticated')
 
     const { title, description, severity, labels } = req.body
-    const bugToSave = { title, description, severity, labels }
-
+    const bugToSave = { title, description, severity, labels}
+    
     bugService.save(bugToSave, loggedInUser)
         .then((savedBug) => res.send(savedBug))
         .catch(err => {

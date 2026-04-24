@@ -45,7 +45,7 @@
       "fullname": "Dodi Da"
     }
   },
-    {
+  {
     "_id": "abc126",
     "title": "Cannot open report",
     "description": "problem when loading the report",
@@ -60,7 +60,7 @@
       "fullname": "aa"
     }
   },
-    {
+  {
     "_id": "abc127",
     "title": "Cannot change logo",
     "description": "problem when changing logo",
@@ -73,6 +73,54 @@
     "owner": {
       "_id": "u104",
       "fullname": "aa"
+    }
+  },
+  {
+    "title": "Bug 1777019166751",
+    "description": "Bug number 1777019167731",
+    "severity": 3,
+    "owner": {
+      "_id": "u104",
+      "fullname": "aa",
+      "isAdmin": true
+    },
+    "_id": "h5QvW",
+    "createdAt": 1777019169969
+  },
+  {
+    "title": "Bug 1777019223365",
+    "description": "test",
+    "severity": 55,
+    "owner": {
+      "_id": "u104",
+      "fullname": "aa",
+      "isAdmin": true
+    },
+    "_id": "8vQff",
+    "createdAt": 1777019241638
+  },
+  {
+    "title": "Bug 1777019328615",
+    "description": "Bug number 1777019329669",
+    "severity": 3,
+    "owner": {
+      "_id": "u104",
+      "fullname": "aa",
+      "isAdmin": true
+    },
+    "_id": "nGGym",
+    "createdAt": 1777019331365
+  },
+  {
+    "title": "Bug 1777019480177",
+    "description": "Bug number 1777019481214",
+    "severity": 3,
+    "_id": "q3flV",
+    "createdAt": 1777019483782,
+    "owner": {
+      "_id": "u104",
+      "fullname": "aa",
+      "isAdmin": true
     }
   }
 ]
