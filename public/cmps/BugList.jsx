@@ -8,9 +8,10 @@ export function BugList({ bugs, onRemoveBug, onEditBug}) {
     const loggedInUser = authService.getLoggedinUser()
 
     function isAuthorized(bug) {
-        if(!loggedInUser || loggedInUser._id !== bug.owner._id) return false
 
-        return true
+        if(loggedInUser && (loggedInUser._id === bug.owner._id || loggedInUser.isAdmin) ) return true
+
+        return false
     }
 
     function shouldBeDesplayd(bug){
