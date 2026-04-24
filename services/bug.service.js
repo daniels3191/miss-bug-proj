@@ -69,7 +69,7 @@ export async function remove(bug_id, user) {
     const idx = bugs.findIndex(bug => bug._id === bug_id)
 
     if (idx === -1) return Promise.reject(`Cant remove bug ${bug_id}`)
-    if(bugs[idx].owner._id != user._id) return Promise.reject('not Your bug')
+    if((bugs[idx].owner._id !== user._id) && !user.isAdmin) return Promise.reject('not Your bug')
         
     const bugToRemove = bugs.splice(idx, 1)[0]
 
@@ -81,7 +81,7 @@ export async function remove(bug_id, user) {
 export function save(bugToSave, user) {
 
     if (bugToSave._id) {
-            if (bugToSave.owner._id != user._id) return Promise.reject('not Your bug')
+            if ((bugToSave.owner._id !== user._id) && !user.isAdmin) return Promise.reject('not Your bug')
         const idx = bugs.findIndex(bug => bug._id === bugToSave._id)
         bugs[idx] = { ...bugs[idx], ...bugToSave }
     } else {

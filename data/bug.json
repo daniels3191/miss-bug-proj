@@ -3,7 +3,7 @@
     "_id": "abc123",
     "title": "Cannot save a new bug",
     "description": "problem when clicking Save",
-    "severity": 5,
+    "severity": 8,
     "createdAt": 1542107359454,
     "labels": [
       "critical",
@@ -70,6 +70,17 @@
       "high",
       "dev-branch"
     ],
+    "owner": {
+      "_id": "u104",
+      "fullname": "aa"
+    }
+  },
+  {
+    "title": "Bug 1777024080195",
+    "description": "Bug number 1777024081382",
+    "severity": 3,
+    "_id": "cGG5d",
+    "createdAt": 1777024083172,
     "owner": {
       "_id": "u104",
       "fullname": "aa"
