@@ -17,7 +17,6 @@ export const bugService = {
 }
 
 function query(queryOptions) {
-    
     return axios.get(BASE_URL, { params: queryOptions })
         .then(res => res.data)
 }
@@ -25,7 +24,6 @@ function query(queryOptions) {
 function getById(bugId) {
     return axios.get(BASE_URL + bugId)
         .then(res => res.data)
-
 }
 
 function remove(bugId) {
@@ -36,9 +34,7 @@ function save(bug) {
     const method = bug._id ? 'put' : 'post'
     return axios[method](BASE_URL + (bug._id || ''), bug)
         .then(res => res.data)
-
 }
-
 
 function _createBugs() {
     let bugs = utilService.loadFromStorage(STORAGE_KEY)

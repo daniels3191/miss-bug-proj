@@ -78,7 +78,10 @@ app.put('/api/bug/:_id', (req, res) => {
 
     bugService.save(bugToSave, loggedInUser)
         .then((savedBug) => res.send(savedBug))
-
+        .catch(err => {
+            loggerService.error(err)
+            res.status(403).send(err)
+        })
 })
 
 app.post('/api/bug', (req, res) => {

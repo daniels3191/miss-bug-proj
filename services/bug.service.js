@@ -37,7 +37,6 @@ export function query({ filterBy, sortBy, pagination }) {
     if(filterBy.ownerId){
         bugsToReturn = bugsToReturn.filter(bug => {
             if(bug.owner._id === filterBy.ownerId){
-                console.log(bug)
                 return true
             }
             return false
