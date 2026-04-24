@@ -31,16 +31,29 @@ export function query({ filterBy, sortBy, pagination }) {
     if (sortBy.sortField === 'severity' || sortBy.sortField === 'createdAt') {
         bugsToReturn.sort((a, b) => (a[sortBy.sortField] - b[sortBy.sortField]) * sortBy.sortDir)
     } else if (sortBy.sortField === 'title') {
-        bugsToReturn.sort((a, b) => (a[sortBy.sortField].localeCompare(b[sortBy.sortField])) * sortBy.sortDir)
+        bugsToReturn = bugsToReturn.sort((a, b) => (a[sortBy.sortField].localeCompare(b[sortBy.sortField])) * sortBy.sortDir)
     }
 
-    if (pagination) {
+    if(filterBy.ownerId){
+        bugsToReturn = bugsToReturn.filter(bug => {
+            if(bug.owner._id === filterBy.ownerId){
+                console.log(bug)
+                return true
+            }
+            return false
+        })
+            console.log(bugsToReturn);
+    }
+
+    if (pagination && !filterBy.ownerId) {
         const { pageIdx, pageSize } = pagination
         const startIdx = pageIdx * pageSize
 
         results.pageCount = Math.ceil(bugsToReturn.length / pageSize)
         bugsToReturn = bugsToReturn.slice(startIdx, startIdx + pageSize)
     }
+
+    
     results.bugs = bugsToReturn
     return Promise.resolve(results)
 }

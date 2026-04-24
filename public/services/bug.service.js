@@ -17,6 +17,7 @@ export const bugService = {
 }
 
 function query(queryOptions) {
+    
     return axios.get(BASE_URL, { params: queryOptions })
         .then(res => res.data)
 }
@@ -69,5 +70,5 @@ function _createBugs() {
 }
 
 function getDefaultFilter() {
-    return { txt: '', minSeverity: 0, sortField: '', sortDir: 1, pageIdx: 0 }
+    return { txt: '', minSeverity: 0, sortField: '', sortDir: 1, pageIdx: 0, ownerId: '' }
 }

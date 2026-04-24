@@ -8,6 +8,7 @@
 @import './pages/BugIndex.css';
 @import './pages/BugDetails.css';
 @import './pages/LoginSignup.css';
+@import './pages/UserDetails.css';
 
 @import './cmps/AppHeader.css';
 @import './cmps/AppFooter.css';

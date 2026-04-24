@@ -1,7 +1,7 @@
 import { authService } from "../services/auth.service.js"
 import { showErrorMsg } from "../services/event-bus.service.js"
 
-const { NavLink } = ReactRouterDOM
+const { NavLink, Link } = ReactRouterDOM
 const { useNavigate } = ReactRouter
 
 export function AppHeader({ loggedInUser, setLoggedInUser }) {
@@ -28,7 +28,12 @@ export function AppHeader({ loggedInUser, setLoggedInUser }) {
             <NavLink to="/about">About</NavLink>
             {!loggedInUser ?
                 <NavLink to="/auth">Login</NavLink> :
-                <button onClick={onLogout}>Logout</button>
+                  <div className="user">   
+                    <span> | </span>
+                        <Link to={`/user/${loggedInUser._id}`}>{loggedInUser.fullname}</Link>
+                        <button className="btn-logout" onClick={onLogout}>Logout</button>
+                    </div>
+                
             }
 
         </nav>

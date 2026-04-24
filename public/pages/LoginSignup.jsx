@@ -29,13 +29,11 @@ export function LoginSignup({ setLoggedInUser }) {
                 setLoggedInUser(user)
                 showSuccessMsg('Signed in successfully!')
                 navigate('/bug')
-
             })
             .catch(err => {
                 console.log(err)
                 showErrorMsg('Cant\' signedup...')
             })
-
     }
 
     function login(credentials) {
@@ -48,7 +46,6 @@ export function LoginSignup({ setLoggedInUser }) {
                 console.log(err)
                 showErrorMsg('Can\'t login...')
             })
-
     }
 
     return <div className="login-page">

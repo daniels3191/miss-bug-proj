@@ -19,7 +19,7 @@ button {
     border-radius: .3em;
     margin: 2px;
 
-    color: whitesmoke;
+    /* color: whitesmoke; */
     cursor: pointer;
     transition: color .3s;
 }

@@ -17,6 +17,8 @@ app.set('query parser', 'extended')
 
 app.get('/api/bug', (req, res) => {
     const queryOptions = parseQueryParams(req.query)
+    console.log(req.query);
+    
     bugService.query(queryOptions)
         .then(bugs => res.send(bugs))
         .catch(err => {
@@ -26,10 +28,12 @@ app.get('/api/bug', (req, res) => {
 })
 
 function parseQueryParams(queryParams) {
+    
     const filterBy = {
         txt: queryParams.txt || '',
         minSeverity: queryParams.minSeverity || 0,
-        labels: queryParams.labels || []
+        labels: queryParams.labels || [], 
+        ownerId: queryParams.ownerId
     }
 
     const sortBy = {
@@ -39,8 +43,9 @@ function parseQueryParams(queryParams) {
 
     const pagination = {
         pageIdx: +queryParams.pageIdx || 0,
-        pageSize: +queryParams.pageSize || 2,
+        pageSize: +queryParams.pageSize || 3,
     }
+
 
     return { filterBy, sortBy, pagination }
 }

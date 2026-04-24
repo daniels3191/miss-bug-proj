@@ -7,10 +7,13 @@ export const userService = {
 }
 
 function query(){
-
+    return axios.get(BASE_URL)
+    .then(res => res.data)
 }
 
-function getById(){
+function getById(bugId){
+     return axios.get(BASE_URL + bugId)
+        .then(res => res.data)
 
 }
 function getEmptyCredentials(){
