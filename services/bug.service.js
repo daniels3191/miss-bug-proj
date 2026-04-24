@@ -64,7 +64,7 @@ export function get(bug_id) {
     return Promise.resolve(bug)
 }
 
-export async function remove(bug_id, user) {
+export function remove(bug_id, user) {
 
     const idx = bugs.findIndex(bug => bug._id === bug_id)
 

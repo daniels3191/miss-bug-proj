@@ -10,6 +10,7 @@ export const userService = {
     getById,
     getByUsername,
     add,
+    remove
 }
 
 function query() {
@@ -49,6 +50,20 @@ function add(user) {
                     return user
                 })
         })
+
+}
+
+export function remove(user_id, user) {
+
+    const idx = users.findIndex(user => user._id === user_id)
+
+    if (idx === -1) return Promise.reject(`Cant remove user ${user_id}`)
+    if(!user.isAdmin) return Promise.reject('Not authorized')
+        
+    const userToRemove = users.splice(idx, 1)[0]
+
+    return _saveUsersToFile()
+        .then(() => userToRemove._id)
 
 }
 

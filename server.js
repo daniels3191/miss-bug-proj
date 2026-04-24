@@ -138,6 +138,22 @@ app.get('/api/user/:_id', (req, res) => {
         })
 })
 
+app.delete('/api/user/:_id', (req, res) => {
+    const loggedInUser = authService.validateToken(req.cookies.loginToken)
+    if (!loggedInUser) return res.status(401).send('Unauthenticated')
+
+    const user_id = req.params._id
+
+    userService.remove(user_id, loggedInUser)
+        .then(user_id => {
+            res.send(`The user ${user_id} has been removed`)
+        })
+        .catch(err => {
+            loggerService.error(err)
+            res.status(404).send('Cant remove the user')
+        })
+})
+
 // Auth API
 app.post('/api/auth/signup', (req, res) => {
     const credentials = req.body

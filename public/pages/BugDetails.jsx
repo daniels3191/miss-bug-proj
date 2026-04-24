@@ -26,7 +26,7 @@ export function BugDetails() {
                 <p className="description">Description: <span>{bug.description}</span></p>
             </div>
         }
-        <button><Link to="/bug">Back to List</Link></button>
+        <button><Link to="/user/useindex">Back to List</Link></button>
     </div>
 
 }

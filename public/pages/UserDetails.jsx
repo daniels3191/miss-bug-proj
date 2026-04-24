@@ -1,12 +1,12 @@
 const { useState, useEffect, useRef } = React
-const { useParams, useNavigate } = ReactRouterDOM
+const { useParams, useNavigate, Link } = ReactRouterDOM
 
 import { BugList } from "../cmps/BugList.jsx"
 import { Pagination } from "../cmps/Pagination.jsx"
 import { bugService } from "../services/bug.service.js"
 import { userService } from "../services/user.service.js"
 
-export function UserDetails({ loggedInUser }) {
+export function UserDetails() {
 
     const [user, setUser] = useState(null)
     const [bugs, setBugs] = useState(null)
@@ -44,6 +44,8 @@ export function UserDetails({ loggedInUser }) {
             {JSON.stringify(user, null, 2)}
         </pre>
         {bugs && <BugList bugs={bugs} /> }
+
+        {user.isAdmin && <button><Link to="/user/userIndex">Admin User Index</Link></button>}
     </div>
     
 }
