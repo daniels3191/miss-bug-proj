@@ -141,8 +141,9 @@ app.get('/api/user/:_id', (req, res) => {
 app.delete('/api/user/:_id', (req, res) => {
     const loggedInUser = authService.validateToken(req.cookies.loginToken)
     if (!loggedInUser) return res.status(401).send('Unauthenticated')
-
-    const user_id = req.params._id
+        console.log(req.params);
+        
+    const {user_id: _id}= req.params
 
     userService.remove(user_id, loggedInUser)
         .then(user_id => {

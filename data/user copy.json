@@ -12,10 +12,22 @@
     "password": "secret2"
   },
   {
+    "_id": "u104",
+    "username": "aa",
+    "password": "aa",
+    "fullname": "aa"
+  },
+  {
     "_id": "u105",
     "username": "admin",
     "password": "admin",
     "fullname": "admin",
     "isAdmin": true
+  },
+  {
+    "username": "dani",
+    "password": "dani",
+    "fullname": "dani",
+    "_id": "CHaKv"
   }
 ]

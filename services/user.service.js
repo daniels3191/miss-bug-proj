@@ -14,9 +14,7 @@ export const userService = {
 }
 
 function query() {
-    console.log(users);
-
-    const usersToReturn = users.map(user => ({ id: user._id, username: user.username, fullname: user.fullname }))
+    const usersToReturn = users.map(user => ({ _id: user._id, username: user.username, fullname: user.fullname, isAdmin: user.isAdmin }))
     return Promise.resolve(usersToReturn)
 }
 
